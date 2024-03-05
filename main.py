@@ -70,7 +70,6 @@ class Tablero:
                 # Verifica que el número de patrones sea exactamente 2
                 if len(patrones) != 2:
                     raise ValueError("Cada piso debe tener exactamente 2 patrones.")
-
                 piso_obj = Piso(piso_nombre, R, C, F, S, patrones)
                 self.agregar_piso(piso_obj)
 
@@ -88,35 +87,29 @@ class Tablero:
     def mostrar_tableros(self):
         root = tk.Tk()
         root.title("Tableros Inicial y Final")
-
         # Crea el frame principal
         main_frame = tk.Frame(root)
         main_frame.pack(fill=tk.BOTH, expand=True)
-
         # Agrega la scrollbar vertical
         scrollbar = Scrollbar(main_frame, orient=tk.VERTICAL)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-
         # Crea el canvas
         canvas = tk.Canvas(main_frame, yscrollcommand=scrollbar.set)
         canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-
         # Configura la scrollbar para que funcione con el canvas
         scrollbar.config(command=canvas.yview)
-
         # Crea un nuevo frame dentro del canvas
         self.frame = tk.Frame(canvas)
         canvas.create_window((0, 0), window=self.frame, anchor="nw")
         # Obtener los nombres de los pisos y ordenarlos alfabéticamente
         nombres_pisos = sorted([nodo.piso.nombre for nodo in self.iterar_nodos_pisos()])
-
         lb_tableros = tk.Listbox(self.frame, selectmode=tk.SINGLE)
         lb_tableros.pack(pady=5)
 
         for nombre_piso in nombres_pisos:
             lb_tableros.insert(tk.END, nombre_piso)
 
-        tk.Label(self.frame, text="Selecciona un piso:", font=('Helvetica', 12)).pack(pady=5)
+        tk.Label(self.frame, text="Selecciona un piso:", font=('Helvetica', 12), bg='lightblue').pack(pady=5)
 
         def actualizar_patron(event):
             selected_tablero_index = lb_tableros.curselection()
@@ -133,10 +126,8 @@ class Tablero:
                 btn_regresar.pack(side=tk.BOTTOM, pady=10)
 
         lb_tableros.bind("<<ListboxSelect>>", actualizar_patron)
-
         btn_regresar = tk.Button(root, text="Regresar al Menú", command=root.destroy)
         btn_regresar.pack(side=tk.LEFT, padx=10, pady=10)
-
         btn_generar_datos = tk.Button(root, text="Generar Datos en Consola", command=self.generar_datos_en_consola)
         btn_generar_datos.pack(side=tk.LEFT, padx=10, pady=10)
 
@@ -151,7 +142,6 @@ class Tablero:
     def mostrar_patron(self, piso):
         for widget in self.frame.winfo_children():
             widget.destroy()
-
         patron_inicial = piso.patrones[0][1]
         patron_final = piso.patrones[1][1]
 
@@ -178,7 +168,6 @@ class Tablero:
             piso_obj = nodo_piso_actual.piso
             print(f"Piso: {piso_obj.nombre}")
             print(f"R: {piso_obj.R}, C: {piso_obj.C}, F: {piso_obj.F}, S: {piso_obj.S}")
-            # ... (puedes agregar más información según tus necesidades)
             nodo_piso_actual = nodo_piso_actual.siguiente
         print("Datos generados en la consola.")
         self.generar_grafo()
@@ -186,21 +175,16 @@ class Tablero:
         
     def generar_grafo(self):
         dot = Digraph(comment='Tableros de Azulejos', format='png')  # Puedes cambiar el formato a otro que prefieras (pdf, svg, etc.)
-
         nodo_piso_actual = self.primer_nodo_piso
         while nodo_piso_actual:
             piso_obj = nodo_piso_actual.piso
             dot.node(f"{piso_obj.nombre}", label=f"{piso_obj.nombre}\nR: {piso_obj.R}, C: {piso_obj.C}\nF: {piso_obj.F}, S: {piso_obj.S}", shape='box', style='rounded', fontname='Helvetica', fontsize='10')
-
             # Agrega nodos para cada patrón
             for codigo, patron in piso_obj.patrones:
                 dot.node(f"{piso_obj.nombre}_{codigo}", label=f"{codigo}\n{patron}", shape='box', fontname='Courier', fontsize='10', color='white' if 'B' in patron else 'black')
-
                 # Conecta el piso con el patrón correspondiente
                 dot.edge(f"{piso_obj.nombre}", f"{piso_obj.nombre}_{codigo}")
-
             nodo_piso_actual = nodo_piso_actual.siguiente
-
         dot.render('reporte', cleanup=True, view=True)  # El archivo se guardará como 'reporte.png'
         return dot
 
@@ -212,21 +196,17 @@ class Aplicacion:
 
     def configurar_ventana(self):
         self.root.title("Optimización de Cambio de Azulejos")
-        self.root.geometry('800x600') # Ajusta el tamaño de la ventana según tus necesidades
+        self.root.geometry('800x800') # Ajusta el tamaño de la ventana según tus necesidades
         self.root.configure(bg='#f0f0f0')
 
     def menu(self):
         marco_menu = tk.Frame(self.root, bg='#51CDC5')
         marco_menu.pack(pady=5)
-
         tk.Label(marco_menu, text="Bienvenido a mi Proyecto 1", font=('Helvetica', 16), bg='#f0f0f0').grid(row=0, column=0, pady=5)
-
         btn_caratula = ttk.Button(marco_menu, text="Carátula", command=self.mostrar_caratula)
         btn_caratula.grid(row=1, column=0, pady=5)
-
         btn_leer_archivo = ttk.Button(marco_menu, text="Leer archivo XML", command=self.leer_archivo_mostrar_tableros)
         btn_leer_archivo.grid(row=2, column=0, pady=5)
-
         btn_salir = ttk.Button(marco_menu, text="Salir", command=self.root.destroy)
         btn_salir.grid(row=3, column=0, pady=5)
 
@@ -239,9 +219,10 @@ class Aplicacion:
     def mostrar_caratula(self):
         caratula_root = tk.Toplevel(self.root)
         caratula_root.title("Carátula")
-        caratula_root.geometry("400x200")
-
+        caratula_root.geometry("400x400")
         tk.Label(caratula_root, text="Isamir Alessandro Armas Cano", font=('Helvetica', 20)).pack(pady=20)
+        tk.Label(caratula_root, text="201901403", font=('Helvetica', 20)).pack(pady=20)
+        tk.Label(caratula_root, text="Proyecto 1 lab IPC 2", font=('Helvetica', 20)).pack(pady=20)
         btn_regresar_caratula = tk.Button(caratula_root, text="Regresar al Menú", command=caratula_root.destroy)
         btn_regresar_caratula.pack(side=tk.BOTTOM, pady=10)
 
